@@ -66,6 +66,14 @@
     })
     .on('brchen-process-exit', (e) => {
         pemu.local('brchen-thread-stop');
+
+        // print which thread find answer
+        let trophyStr = [];
+        for (let i = 0; i < trophy.length; i++) {
+            trophyStr.push(`[ T${i}: ${trophy[i]} ]`);
+        }
+        INFO(trophyStr.join(', '));
+
         setTimeout(() => {
             process.exit(0);
         }, 5000);
