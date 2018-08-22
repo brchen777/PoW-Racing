@@ -1,0 +1,15 @@
+{
+    "remote": {
+        "host": "127.0.0.1",
+        "port": 23400
+    },
+    "processes": [
+        {
+            "tag": "user1",
+            "root": "./",
+            "script": "./process.js",
+            "args": [10, 0],
+            "env": ["--experimental-worker", "--no-warnings"]
+        }
+    ]
+}
