@@ -17,10 +17,14 @@
         }
 
         const dataStr = crypto.randomBytes(10).toString('hex');
-        const nonceStr = (++nonce).toString(16);
+        
+        let nonceStr = (++nonce).toString(16);
+        // if nonce is odd length, add 0
+        nonceStr = ((nonceStr.length) % 2) ? `0${nonceStr}` : nonceStr;
 
         const hash = crypto.createHash('sha256');
-        const result = hash.update(`${payloadStr}${dataStr}${nonceStr}`).digest();
+        const compactData = Buffer.from(`${payloadStr}${dataStr}${nonceStr}`, 'hex');
+        const result = hash.update(compactData).digest();
 
         const difficulty = Buffer.from(difficultyStr, 'hex');
 
@@ -29,7 +33,7 @@
         // difficulty < result: -1
         const compare = Buffer.compare(difficulty, result);
 
-        // difficulty >= result
+        difficulty >= result
         if (compare >= 0) {
             pemu.local('brchen-get-answer', { threadNo, key, dataStr, nonceStr });
         }
