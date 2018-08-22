@@ -16,7 +16,7 @@
         }
 
         const dataStr = crypto.randomBytes(10).toString('hex');
-        
+                
         let nonceStr = (++nonce).toString(16);
         // if nonce is odd length, prepend 0
         nonceStr = ((nonceStr.length) % 2) ? `0${nonceStr}` : nonceStr;
@@ -32,10 +32,10 @@
         // difficulty < result: -1
         const compare = Buffer.compare(difficulty, result);
 
-        difficulty >= result
+        // difficulty >= result
         if (compare >= 0) {
             pemu.local('brchen-get-answer', { threadNo, key, dataStr, nonceStr });
-        }
+        }    
     };
 
     const calculatePause = () => {
