@@ -5,10 +5,9 @@
     const crypto = require('crypto');
     const { threadNo, interval } = pemu.args;
 
-    // 0: open, 1: pause, 2: stop
-    let threadStatus = 0;
-    let intervalId = 0;
     let nonce = 0;
+    let intervalId = 0;
+    let threadStatus = 0;   // 0: open, 1: pause, 2: stop
 
     const calculate = (key, difficultyStr, payloadStr) => {
         if (threadStatus === 1) {
@@ -19,7 +18,7 @@
         const dataStr = crypto.randomBytes(10).toString('hex');
         
         let nonceStr = (++nonce).toString(16);
-        // if nonce is odd length, add 0
+        // if nonce is odd length, prepend 0
         nonceStr = ((nonceStr.length) % 2) ? `0${nonceStr}` : nonceStr;
 
         const hash = crypto.createHash('sha256');
@@ -40,6 +39,7 @@
     };
 
     const calculatePause = () => {
+        nonce = 0;
         threadStatus = 1;
         clearInterval(intervalId);
     };
