@@ -20,7 +20,7 @@ Difficulty >= SHA256(payload(10 byte) + random_data(10 byte) + nonce(bytes))
 
 ## Build and Run ##
 
-### Run sample (use node) ###
+### Run sample (use paraemu) ###
 
 > paraemu ./config.sample.json
 
