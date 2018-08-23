@@ -7,6 +7,7 @@
     const { groupId } = pemu;
     let remoteGroupId = null;
     let trophy = [];
+    let oldKey = null;
 
     pemu
     .on('tasks-ready', (e) => {
@@ -53,20 +54,25 @@
         INFO(`Thread restart: key: ${res.key}, payload: ${res.payload}, difficulty: ${res.difficulty}`);
     })
     .on('brchen-get-answer', (e, res) => {
+        // Prevent repeated sending
+        if (res.key === oldKey) {
+            return;
+        }
+        oldKey = res.key;
+        
         INFO(`Get answer: key: ${res.key}, data: ${res.dataStr}, nonce: ${res.nonceStr}`);
 
+        // counting
         trophy[res.threadNo]++;
+        
         pemu.emit('pow-answer', { 
             tag: pemu.tag,
             key: res.key,
             data: res.dataStr,
             nonce: res.nonceStr
         });
-        pemu.send(remoteGroupId, 'fetch-difficulty');
     })
     .on('brchen-process-exit', (e) => {
-        pemu.local('brchen-thread-stop');
-
         // print which thread find answer
         let trophyStr = [];
         for (let i = 0; i < trophy.length; i++) {

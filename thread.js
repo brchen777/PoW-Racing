@@ -3,14 +3,13 @@
 
     const pemu = require('paraemu');
     const crypto = require('crypto');
-    const { threadNo, interval } = pemu.args;
+    const { threadNo, timeout } = pemu.args;
 
-    let intervalId = 0;
-    let threadStatus = 0;   // 0: open, 1: pause, 2: stop
+    let threadRun = false;
 
     const calculate = (key, difficultyStr, payloadStr) => {
-        if (threadStatus === 1) {
-            clearInterval(intervalId);
+
+        if (!threadRun) {
             return;
         }
 
@@ -31,31 +30,21 @@
         // difficulty >= result
         if (compare >= 0) {
             pemu.local('brchen-get-answer', { threadNo, key, dataStr, nonceStr });
-        }    
-    };
-
-    const calculatePause = () => {
-        threadStatus = 1;
-        clearInterval(intervalId);
-    };
-
-    const calculateStop = () => {
-        threadStatus = 2;
-        clearInterval(intervalId);
+        }
+        else {
+            setTimeout(calculate, timeout, key, difficultyStr, payloadStr);
+        }
     };
 
     pemu
-    .on('brchen-get-answer', () => {
-        pemu.local('brchen-thread-pause');
+    .on('brchen-get-answer', (e, res) => {
+        threadRun = false;
     })
     .on('brchen-thread-start', (e, res) => {
-        threadStatus = 0;
-        intervalId = setInterval(calculate, interval, res.key, res.difficulty, res.payload);
+        threadRun = true;
+        setTimeout(calculate, timeout, res.key, res.difficulty, res.payload);
     })
-    .on('brchen-thread-pause', calculatePause)
-    .on('brchen-thread-stop', calculateStop)
     .on('brchen-thread-restart', (e, res) => {
-        calculatePause();
         pemu.send(pemu.uniqueId, 'brchen-thread-start', res);
     });
 })();
