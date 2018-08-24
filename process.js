@@ -17,7 +17,7 @@
         for (let i = 0; i < threadCnt; i++) {
             pemu.job('./thread.js', { workerData: { threadNo: i, timeout } });
         }
-        trophy = Array(parseInt(threadCnt)).fill(0);
+        trophy = Array(threadCnt).fill(0);
 
         pemu.local('brchen-threads-ready');
     })
