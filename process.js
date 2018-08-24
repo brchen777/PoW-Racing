@@ -13,9 +13,9 @@
     .on('tasks-ready', (e) => {
         INFO('Tasks ready.');
 
-        const [threadCnt, interval] = pemu.args;
+        const [threadCnt, timeout] = pemu.args;
         for (let i = 0; i < threadCnt; i++) {
-            pemu.job('./thread.js', { workerData: { threadNo: i, interval } });
+            pemu.job('./thread.js', { workerData: { threadNo: i, timeout } });
         }
         trophy = Array(parseInt(threadCnt)).fill(0);
 
